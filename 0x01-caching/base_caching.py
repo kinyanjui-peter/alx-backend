@@ -27,6 +27,10 @@ class BaseCaching():
         """
         if key is not None and item is not None:
             self.cache_data[key] = item
+        if len(self.cache_data) >= (self.MAX_ITEMS):
+            firstKey = next(iter(self.cache_data))
+            del self.cache_data[firstKey] 
+            print("DISCARD: {}", firstKey)
         # raise NotImplementedError("put must be implemented in your
         # cache class")
 
