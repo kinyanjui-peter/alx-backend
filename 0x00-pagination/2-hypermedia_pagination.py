@@ -57,7 +57,7 @@ class Server:
         return data[start:end]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """a function that uses Hypermedia""" 
+        """a function that uses Hypermedia"""
         hyperData = self.get_page(page, page_size)
         dataLength = len(hyperData)
         total_pages = math.ceil(len(self.__dataset) / page_size)
