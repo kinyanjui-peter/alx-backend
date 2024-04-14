@@ -18,14 +18,15 @@ def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """
     start index and an end index corresponding to the range of
     """
-    return ((page-1) * page_size, page_size * page)
+    start_index = (page - 1) * page_size
+    end_index = page * page_size
+    return start_index, end_index
 
 
 class Server:
     """Server class to paginate a database of popular baby names.
     """
     DATA_FILE = "Popular_Baby_Names.csv"
-
     def __init__(self):
         self.__dataset = None
 
@@ -46,11 +47,11 @@ class Server:
         assert type(page_size) is int and page_size > 0
 
         # get the data from the csv
-        data = self.dataset()
-
-        try:
-            # get the index to start and end at
-            start, end = index_range(page, page_size)
-            return data[start:end]
-        except IndexError:
+        data = self.dataset() 
+        # get the index to start and end at
+        start, end = index_range(page, page_size)
+        if start >= len(self.__dataset):
             return []
+        
+        return data[start:end]
+        
