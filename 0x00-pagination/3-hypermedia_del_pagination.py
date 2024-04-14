@@ -38,7 +38,7 @@ class Server:
                 i: dataset[i] for i in range(len(dataset))
             }
         return self.__indexed_dataset
-    
+
     def mark_row_deleted(self, index: int):
         """Mark a row as deleted."""
         self.deleted_rows.append(index)
@@ -67,7 +67,7 @@ class Server:
         for row_index in deleted_rows:
             if row_index < next_index:
                 start_index += 1
-                
+
         for i in range(start_index, min(next_index, dataset_length)):
             data.append(self.dataset()[i])
 
