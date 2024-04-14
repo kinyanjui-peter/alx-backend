@@ -44,11 +44,20 @@ class Server:
         Deletion-resilient hypermedia pagination: a fuction that ensure
         consistency even if a data, or page is deleted
         """
+        
         data = []
         
         start_index = index * page_size
         next_index = start_index + page_size
         dataset = self.dataset()
+        # check validity of start index
+        assert start_index < len(dataset)
+        
+        #replace deleted dataset with follwing dataset
+        deleted_rows = self.deleted_rows() 
+        for row_index in deleted_rows:
+            if row_index < next_index:
+                start_index += 1
         for i in range(start_index, min(next_index, len(dataset))): 
             data.append(dataset[i])
                     
