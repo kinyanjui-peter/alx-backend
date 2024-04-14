@@ -38,29 +38,39 @@ class Server:
                 i: dataset[i] for i in range(len(dataset))
             }
         return self.__indexed_dataset
+    
+    def mark_row_deleted(self, index: int):
+        """Mark a row as deleted."""
+        self.deleted_rows.append(index)
+
+    def deleted_rows(self) -> List[int]:
+        """Returns a list of indices of deleted rows."""
+        return self.deleted_rows
 
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """
         Deletion-resilient hypermedia pagination: a fuction that ensure
         consistency even if a data, or page is deleted
         """
-        
+
         data = []
-        
+
         start_index = index * page_size
         next_index = start_index + page_size
-        dataset = self.dataset()
+        dataset_length = len(self.dataset())
+        # dataset = self.dataset()
         # check validity of start index
-        assert start_index < len(dataset)
-        
-        #replace deleted dataset with follwing dataset
-        deleted_rows = self.deleted_rows() 
+        assert start_index < dataset_length
+
+        # replace deleted dataset with follwing dataset
+        deleted_rows = self.deleted_rows()
         for row_index in deleted_rows:
             if row_index < next_index:
                 start_index += 1
-        for i in range(start_index, min(next_index, len(dataset))): 
-            data.append(dataset[i])
-                    
+                
+        for i in range(start_index, min(next_index, dataset_length)):
+            data.append(self.dataset()[i])
+
         return {
             'index': start_index,
             'next_index': next_index,
