@@ -5,10 +5,12 @@ This class implements a Most Recently Used (MRU) caching system.
 
 Attributes:
     cache_data (dict): Dictionary to store key-value pairs for caching.
-    usedKeys (list): List to track the order of key usage (most recent keys are at the end).
+    usedKeys (list): List to track the order of key usage
+    (most recent keys are at the end).
 """
 
 BaseCaching = __import__('base_caching').BaseCaching
+
 
 class MRUCache(BaseCaching):
     """MRUCache class inherits from BaseCaching."""
@@ -16,7 +18,8 @@ class MRUCache(BaseCaching):
     def __init__(self):
         """Initialize MRUCache instance.
 
-        Calls the __init__ method of the BaseCaching class and initializes usedKeys list.
+        Calls the __init__ method of the BaseCaching class and
+        initializes usedKeys list.
         """
         super().__init__()
         self.usedKeys = []
@@ -24,7 +27,8 @@ class MRUCache(BaseCaching):
     def put(self, key, item):
         """Add a key-value pair to the cache.
 
-        If the cache is full (reached the MAX_ITEMS limit), remove the most recently used item
+        If the cache is full (reached the MAX_ITEMS limit),
+        remove the most recently used item
         to make space for the new item (MRU algorithm).
 
         Args:
@@ -52,13 +56,15 @@ class MRUCache(BaseCaching):
     def get(self, key):
         """Retrieve the value associated with the given key from the cache.
 
-        If the key exists in the cache, move it to the end of the usedKeys list (recently used).
+        If the key exists in the cache, move
+        it to the end of the usedKeys list (recently used).
 
         Args:
             key: Key of the item to retrieve.
 
         Returns:
-            Value associated with the key if found in the cache, None otherwise.
+            Value associated with the key
+            if found in the cache, None otherwise.
         """
         if key is not None and key in self.cache_data:
             # Move the key to the end of the usedKeys list (recently used)
