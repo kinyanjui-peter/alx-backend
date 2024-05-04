@@ -25,8 +25,7 @@ class LIFOCache(BaseCaching):
 
         If the cache is full (reached the MAX_ITEMS limit)
         and the key is not already in the cache,
-        remove the last item added to make
-        space for the new item (LIFO algorithm).
+        remove the last item added to make space for the new item (LIFO algorithm).
 
         Args:
             key: Key of the item to be added.
