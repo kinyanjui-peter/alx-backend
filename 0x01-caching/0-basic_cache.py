@@ -5,7 +5,11 @@ Caching System
 BaseCaching = __import__('base_caching').BaseCaching
 
 
-def __init__(self):
+class BasicCache(BaseCaching):
+    """_summary_
+    """
+
+    def __init__(self):
         """_summary_
         """
         super().__init__()
