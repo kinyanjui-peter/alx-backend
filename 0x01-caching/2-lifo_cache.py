@@ -9,6 +9,7 @@ Attributes:
 
 BaseCaching = __import__('base_caching').BaseCaching
 
+
 class LIFOCache(BaseCaching):
     """LIFOCache class inherits from BaseCaching."""
 
@@ -22,8 +23,10 @@ class LIFOCache(BaseCaching):
     def put(self, key, item):
         """Add a key-value pair to the cache.
 
-        If the cache is full (reached the MAX_ITEMS limit) and the key is not already in the cache,
-        remove the last item added to make space for the new item (LIFO algorithm).
+        If the cache is full (reached the MAX_ITEMS limit)
+        and the key is not already in the cache,
+        remove the last item added to make
+        space for the new item (LIFO algorithm).
 
         Args:
             key: Key of the item to be added.
@@ -32,7 +35,8 @@ class LIFOCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if len(self.cache_data) >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+        if len(self.cache_data) >=
+        BaseCaching.MAX_ITEMS and key not in self.cache_data:
             # Cache is full, remove the last item added (LIFO)
             last_key = next(reversed(self.cache_data))
             del self.cache_data[last_key]
@@ -48,7 +52,8 @@ class LIFOCache(BaseCaching):
             key: Key of the item to retrieve.
 
         Returns:
-            Value associated with the key if found in the cache, None otherwise.
+            Value associated
+            with the key if found in the cache, None otherwise.
         """
         if key is None or key not in self.cache_data:
             return None
