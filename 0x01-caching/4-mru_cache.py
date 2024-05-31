@@ -1,73 +1,41 @@
 #!/usr/bin/env python3
-"""Create a class MRUCache that inherits from BaseCaching.
-
-This class implements a Most Recently Used (MRU) caching system.
-
-Attributes:
-    cache_data (dict): Dictionary to store key-value pairs for caching.
-    usedKeys (list): List to track the order of key usage
-    (most recent keys are at the end).
-"""
+"""FIFO Cache"""
 
 BaseCaching = __import__('base_caching').BaseCaching
 
 
 class MRUCache(BaseCaching):
-    """MRUCache class inherits from BaseCaching."""
+    """A Cache object that deletes the Last added/updated when full"""
 
     def __init__(self):
-        """Initialize MRUCache instance.
-
-        Calls the __init__ method of the BaseCaching class and
-        initializes usedKeys list.
-        """
         super().__init__()
-        self.usedKeys = []
+        self.next_rank = 1
+        self.cache_order = {}
+
+    def check_overflow(self, key):
+        """Delete the first item if needed"""
+        if self.MAX_ITEMS != len(self.cache_data) or key in self.cache_data:
+            return
+        sorted_dict = dict(sorted(self.cache_order.items(),
+                                  key=lambda item: item[1], reverse=True))
+        deleted_key = next(iter(sorted_dict))
+        del self.cache_data[deleted_key]
+        del self.cache_order[deleted_key]
+        print("DISCARD:", deleted_key)
 
     def put(self, key, item):
-        """Add a key-value pair to the cache.
-
-        If the cache is full (reached the MAX_ITEMS limit),
-        remove the most recently used item
-        to make space for the new item (MRU algorithm).
-
-        Args:
-            key: Key of the item to be added.
-            item: Value of the item to be added.
-        """
+        """Adds item to the cache"""
         if key is None or item is None:
             return
-
+        self.check_overflow(key)
         self.cache_data[key] = item
-
-        if key in self.usedKeys:
-            # Move the key to the end of the usedKeys list (recently used)
-            self.usedKeys.append(self.usedKeys.pop(self.usedKeys.index(key)))
-        else:
-            # Add the key to the end of the usedKeys list (newly added)
-            self.usedKeys.append(key)
-
-        if len(self.usedKeys) > BaseCaching.MAX_ITEMS:
-            # Cache is full, remove the most recently used item (MRU)
-            discard = self.usedKeys.pop(-1)
-            del self.cache_data[discard]
-            print('DISCARD: {:s}'.format(discard))
+        self.cache_order[key] = self.next_rank
+        self.next_rank += 1
 
     def get(self, key):
-        """Retrieve the value associated with the given key from the cache.
-
-        If the key exists in the cache, move
-        it to the end of the usedKeys list (recently used).
-
-        Args:
-            key: Key of the item to retrieve.
-
-        Returns:
-            Value associated with the key
-            if found in the cache, None otherwise.
-        """
-        if key is not None and key in self.cache_data:
-            # Move the key to the end of the usedKeys list (recently used)
-            self.usedKeys.append(self.usedKeys.pop(self.usedKeys.index(key)))
-            return self.cache_data[key]
-        return None
+        """Get an item by key"""
+        if key is None or key not in self.cache_data:
+            return
+        self.cache_order[key] = self.next_rank
+        self.next_rank += 1
+        return self.cache_data.get(key)
