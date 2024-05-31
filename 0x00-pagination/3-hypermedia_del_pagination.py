@@ -4,7 +4,6 @@ Deletion-resilient hypermedia pagination
 """
 
 import csv
-import math
 from typing import List, Dict
 
 
@@ -39,41 +38,44 @@ class Server:
             }
         return self.__indexed_dataset
 
-    def mark_row_deleted(self, index: int):
-        """Mark a row as deleted."""
-        self.deleted_rows.append(index)
-
-    def deleted_rows(self) -> List[int]:
-        """Returns a list of indices of deleted rows."""
-        return self.deleted_rows
-
     def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
         """
-        Deletion-resilient hypermedia pagination: a fuction that ensure
-        consistency even if a data, or page is deleted
-        """
+    Retrieve a page of data from the dataset with deletion-resilient
+    hypermedia pagination.
 
-        data = []
+    Args:
+        index (int, optional): The start index of the page to retrieve.
+        If None, defaults to 0.
+        page_size (int, optional): The number of items per page. Defaults to
+        10.
 
-        start_index = index * page_size
-        next_index = start_index + page_size
-        dataset_length = len(self.dataset())
-        # dataset = self.dataset()
-        # check validity of start index
-        assert start_index < dataset_length
+    Returns:
+        dict: A dictionary containing the following key-value pairs:
+            - 'index': The start index of the returned page.
+            - 'next_index': The index of the first item after the last item on
+            the current page.
+            - 'page_size': The size of the current page.
+            - 'data': The actual page of the dataset.
 
-        # replace deleted dataset with follwing dataset
-        deleted_rows = self.deleted_rows()
-        for row_index in deleted_rows:
-            if row_index < next_index:
-                start_index += 1
+    Raises:
+        AssertionError: If the provided index is out of range
+        (i.e., less than 0 or greater than the maximum index).
+    """
+        dataset = self.dataset()
+        max_index = len(dataset) - 1
 
-        for i in range(start_index, min(next_index, dataset_length)):
-            data.append(self.dataset()[i])
+        # Check if index is within valid range
+        assert index is None or 0 <= index <= max_index, "Index out of range"
+
+        if index is None:
+            index = 0
+
+        next_index = min(index + page_size, max_index + 1)
+        data = dataset[index:next_index]
 
         return {
-            'index': start_index,
-            'next_index': next_index,
-            'page_size': page_size,
-            'data': data
+            "index": index,
+            "next_index": next_index,
+            "page_size": page_size,
+            "data": data
         }
